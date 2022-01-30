@@ -104,7 +104,6 @@ traintok <- spacy_tokenize(dftrain$Message_body,
     output = "list"
 )
 v_traintok <- unlist(traintok)
-#v_traintok <- v_traintok[-which(v_traintok=="")] # Remove empty sentences
 numsen_train <- length(v_traintok)
 text <- paste("Num. sentences (train): ", numsen_train)
 banner(text, centre = TRUE, bandChar = "-")
@@ -127,7 +126,6 @@ testtok <- spacy_tokenize(dftest$Message_body,
     output = "list"
 )
 v_testtok <- unlist(testtok)
-#v_testtok <- v_testtok[-which(v_testtok=="")] # Remove empty sentences
 numsen_test <- length(v_testtok)
 text <- paste("Num. sentences (test): ", numsen_test)
 banner(text, centre = TRUE, bandChar = "-")
@@ -196,7 +194,7 @@ tic <- Sys.time()
 # [7.1.1] Train set
 corptrain <- corpus(dftrain, text_field = "Message_body")
 # Save result on a file
-saveRDS(corp, file="spacy-trainparse.rds")
+saveRDS(corptrain, file="spacy-trainparse.rds")
 # [7.1.2] Test set
 corptest <- corpus(dftest, text_field = "Message_body")
 # Save result on a file
@@ -206,7 +204,7 @@ Sys.time()-tic
 # [7.2] Generate the model
 # Create dfm objects
 dfmtrain <- dfm(corptrain, remove=stopwords("en"))
-dfmtest <- dfm(corptest=stopwords("en"))
+dfmtest <- dfm(corptest, remove=stopwords("en"))
 # Create model
 model <- textmodel_nb(dfmtrain, docvars(dfmtrain, "Label"), prior = "docfreq")
 dfmat_matched <- dfm_match(dfmtest, features = featnames(dfmtrain))
